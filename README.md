@@ -1,4 +1,4 @@
-# 🎵 Ses Dengeleyici
+#  Ses Dengeleyici
 
 Windows için otomatik ses seviyesi dengeleyici. Bilgisayardan çıkan seslerin seviyesini gerçek zamanlı olarak dengeler - yüksek sesleri düşürür, düşük sesleri yükseltir.
 
@@ -6,16 +6,16 @@ Windows için otomatik ses seviyesi dengeleyici. Bilgisayardan çıkan seslerin 
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2B-blue)](https://www.microsoft.com/windows)
 [![C++](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B)](https://isocpp.org/)
 
-## ✨ Özellikler
+##  Özellikler
 
-- 🎵 **Otomatik Ses Dengeleme**: Gerçek zamanlı ses seviyesi kontrolü
-- 🔇 **Yüksek Sesleri Düşürür**: Ani yüksek sesler rahatsız etmez
-- 🔊 **Düşük Sesleri Yükseltir**: Sessiz bölümleri daha iyi duyarsınız
-- 🚀 **Arka Plan Çalışma**: System tray'de sessizce çalışır
-- ⚡ **Düşük Kaynak Kullanımı**: %1-2 CPU, ~10 MB RAM
-- 🎛️ **Kolay Kontrol**: Çift tıklayarak açıp-kapatabilirsiniz
+-  **Otomatik Ses Dengeleme**: Gerçek zamanlı ses seviyesi kontrolü
+-  **Yüksek Sesleri Düşürür**: Ani yüksek sesler rahatsız etmez
+-  **Düşük Sesleri Yükseltir**: Sessiz bölümleri daha iyi duyarsınız
+-  **Arka Plan Çalışma**: System tray'de sessizce çalışır
+-  **Düşük Kaynak Kullanımı**: %1-2 CPU, ~10 MB RAM
+-  **Kolay Kontrol**: Çift tıklayarak açıp-kapatabilirsiniz
 
-## 📸 Ekran Görüntüsü
+##  Ekran Görüntüsü
 
 ```
 System Tray'de çalışan uygulama:
@@ -26,14 +26,14 @@ System Tray'de çalışan uygulama:
 └──────────────────────────────┘
 ```
 
-## 🎯 Kullanım Senaryoları
+##  Kullanım Senaryoları
 
 - **Gece Müzik Dinlerken**: Yüksek sesler uyanmanıza neden olmaz
 - **Film İzlerken**: Diyaloglar net duyulur, patlama sesleri kontrollü
 - **Oyun Oynarken**: Ses dengesizlikleri giderilir
 - **Podcast Dinlerken**: Tüm konuşmacılar aynı seviyede
 
-## 🚀 Kurulum
+##  Kurulum
 
 ### Gereksinimler
 
@@ -66,7 +66,7 @@ cmake --build . --config Release
 build\bin\Release\SesDengeleyici.exe
 ```
 
-## 💡 Kullanım
+##  Kullanım
 
 1. Uygulamayı başlatın
 2. System tray'de (saat yanında) icon görünecek
@@ -80,7 +80,7 @@ build\bin\Release\SesDengeleyici.exe
   - Hakkında
   - Çıkış
 
-## ⚙️ Ayarlar
+##  Ayarlar
 
 `src/main.cpp` dosyasındaki parametreleri değiştirerek özelleştirebilirsiniz:
 
@@ -108,7 +108,7 @@ SetRatio(4.0f);
 SetTargetLevel(0.7f);
 ```
 
-## 🏗️ Proje Yapısı
+##  Proje Yapısı
 
 ```
 ses-dengeliyici/
@@ -127,7 +127,7 @@ ses-dengeliyici/
 └── build.bat             # Hızlı derleme scripti
 ```
 
-## 🔧 Teknik Detaylar
+##  Teknik Detaylar
 
 ### Teknolojiler
 
@@ -145,22 +145,22 @@ ses-dengeliyici/
 4. **Normalization**: Genel ses seviyesini hedef değerde tutar
 5. **Smoothing**: Ani değişimleri yumuşatır
 
-## 📊 Performans
+##  Performans
 
 - **CPU Kullanımı**: %1-2
 - **RAM Kullanımı**: ~10 MB
 - **Gecikme**: < 10ms (fark edilmez)
 - **Dosya Boyutu**: ~50-100 KB
 
-## 🛡️ Güvenlik
+##  Güvenlik
 
-- ✅ Modern C++ standartları
-- ✅ Type-safe kod
-- ✅ Memory-safe (RAII pattern)
-- ✅ Exception-safe
-- ✅ No external dependencies
+-  Modern C++ standartları
+-  Type-safe kod
+-  Memory-safe (RAII pattern)
+-  Exception-safe
+-  No external dependencies
 
-## 🤝 Katkıda Bulunma
+##  Katkıda Bulunma
 
 1. Fork yapın
 2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
@@ -168,15 +168,15 @@ ses-dengeliyici/
 4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
 5. Pull Request açın
 
-## 📝 Lisans
+##  Lisans
 
 Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
-## 🐛 Sorun Bildirme
+##  Sorun Bildirme
 
 Sorun bulursanız veya öneriniz varsa [issue](../../issues) açabilirsiniz.
 
-## 💬 SSS
+##  SSS
 
 **S: Ses kalitesi düşüyor mu?**  
 C: Hayır, sadece ses seviyesi ayarlanır, kalite korunur.
@@ -190,13 +190,13 @@ C: Hayır, çok düşük kaynak kullanır (%1-2 CPU).
 **S: Otomatik başlatabilir miyim?**  
 C: Evet, `Win+R` → `shell:startup` ile başlangıç klasörüne kısayol atın.
 
-## 🙏 Teşekkürler
+##  Teşekkürler
 
 - Microsoft WASAPI dokümantasyonu
 - C++ topluluğu
 
 ---
 
-**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
+** Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
 
-Made with ❤️ using C++
+Made with  using C++
