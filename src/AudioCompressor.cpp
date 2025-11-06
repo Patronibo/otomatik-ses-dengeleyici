@@ -2,6 +2,7 @@
 #include <numeric>
 #include <cmath>
 #include <algorithm>
+using namespace std;
 
 AudioCompressor::AudioCompressor()
     : m_threshold(-20.0f)    // -20 dB threshold
@@ -23,64 +24,45 @@ float AudioCompressor::ProcessAudio(float* audioData, size_t frameCount, int cha
         return 1.0f;
     }
 
-    // RMS seviyesini hesapla
     float rms = CalculateRMS(audioData, frameCount, channels);
     m_currentLevel = rms;
 
-    // Geçmişe ekle (smoothing için)
     m_levelHistory[m_historyIndex] = rms;
     m_historyIndex = (m_historyIndex + 1) % m_historySize;
 
-    // Ortalama seviye
-    float avgLevel = std::accumulate(m_levelHistory.begin(), m_levelHistory.end(), 0.0f) / static_cast<float>(m_historySize);
+    float avgLevel = accumulate(m_levelHistory.begin(), m_levelHistory.end(), 0.0f) / static_cast<float>(m_historySize);
 
-    // dB'ye çevir
     float levelDb = LinearToDb(avgLevel);
 
-    // Compression hesapla
     float gainReduction = 0.0f;
     if (levelDb > m_threshold) {
-        // Threshold'u aşan kısım
         float excess = levelDb - m_threshold;
-        // Compression ratio uygula
         gainReduction = excess * (1.0f - 1.0f / m_ratio);
     }
 
-    // Hedef gain'i hesapla
     float targetGain = DbToLinear(-gainReduction);
-
-    // Attack/Release envelope
-    float attackCoef = std::exp(-1000.0f / (m_attackTime * 48000.0f));
-    float releaseCoef = std::exp(-1000.0f / (m_releaseTime * 48000.0f));
+    float attackCoef = exp(-1000.0f / (m_attackTime * 48000.0f));
+    float releaseCoef = exp(-1000.0f / (m_releaseTime * 48000.0f));
 
     if (targetGain < m_envelope) {
-        // Attack (ses yükselirken)
         m_envelope = attackCoef * m_envelope + (1.0f - attackCoef) * targetGain;
     } else {
-        // Release (ses düşerken)
         m_envelope = releaseCoef * m_envelope + (1.0f - releaseCoef) * targetGain;
     }
 
-    // Hedef volume'u hesapla
-    // Eğer ses çok düşükse yükselt, çok yüksekse düşür
     float volumeAdjust = 1.0f;
     
     if (avgLevel < 0.1f && avgLevel > 0.01f) {
-        // Düşük sesleri yükselt
         volumeAdjust = m_targetLevel / (avgLevel + 0.001f);
-        volumeAdjust = std::min(volumeAdjust, 3.0f); // Maksimum 3x artış
+        volumeAdjust = min(volumeAdjust, 3.0f); 
     } else if (avgLevel > m_targetLevel) {
-        // Yüksek sesleri düşür
         volumeAdjust = m_targetLevel / avgLevel;
     }
 
-    // Compression envelope ile birleştir
     m_targetVolume = m_envelope * volumeAdjust;
     
-    // Limiter (0.3 - 1.2 arası tut)
-    m_targetVolume = std::max(0.3f, std::min(1.2f, m_targetVolume));
+    m_targetVolume = max(0.3f, min(1.2f, m_targetVolume));
 
-    // Smoothing uygula (ani değişimleri önle)
     static float smoothedVolume = 1.0f;
     float smoothingFactor = 0.95f;
     smoothedVolume = smoothingFactor * smoothedVolume + (1.0f - smoothingFactor) * m_targetVolume;
@@ -101,16 +83,17 @@ float AudioCompressor::CalculateRMS(float* audioData, size_t frameCount, int cha
         sum += sample * sample;
     }
 
-    return std::sqrt(sum / static_cast<float>(totalSamples));
+    return sqrt(sum / static_cast<float>(totalSamples));
 }
 
 float AudioCompressor::LinearToDb(float linear) {
     if (linear <= 0.0f) {
-        return -100.0f; // Minimum dB
+        return -100.0f; 
     }
-    return 20.0f * std::log10(linear);
+    return 20.0f * log10(linear);
 }
 
 float AudioCompressor::DbToLinear(float db) {
-    return std::pow(10.0f, db / 20.0f);
+    return pow(10.0f, db / 20.0f);
 }
+
