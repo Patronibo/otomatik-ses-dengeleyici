@@ -12,12 +12,10 @@ std::atomic<bool> g_isActive{true};
 std::atomic<bool> g_shouldExit{false};
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    // Unused parameters
     (void)hPrevInstance;
     (void)lpCmdLine;
     (void)nCmdShow;
     
-    // Console penceresi aç (debug için)
     #ifdef _DEBUG
     if (AllocConsole()) {
         FILE* fpStdout = nullptr;
@@ -28,34 +26,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     #endif
 
-    // Audio sistemi oluştur
     AudioCapture audioCapture;
     AudioCompressor compressor;
 
-    // Compressor parametrelerini ayarla
-    compressor.SetThreshold(-20.0f);  // -20 dB threshold
-    compressor.SetRatio(3.0f);        // 3:1 compression
-    compressor.SetAttackTime(5.0f);   // 5 ms attack
-    compressor.SetReleaseTime(50.0f); // 50 ms release
-    compressor.SetTargetLevel(0.65f); // %65 hedef seviye
+    compressor.SetThreshold(-20.0f);  
+    compressor.SetRatio(3.0f);        
+    compressor.SetAttackTime(5.0f);   
+    compressor.SetReleaseTime(50.0f); 
+    compressor.SetTargetLevel(0.65f); 
 
-    // Audio callback ayarla
     audioCapture.SetCallback([&](float* audioData, size_t frameCount, int channels) {
         if (!g_isActive) {
             return;
         }
-
-        // Ses seviyesini analiz et ve uygun volume'u hesapla
+    
         float targetVolume = compressor.ProcessAudio(audioData, frameCount, channels);
-        
-        // Volume'u uygula
         audioCapture.SetVolume(targetVolume);
     });
 
-    // Audio capture'ı başlat
     if (!audioCapture.Initialize()) {
         #ifdef _DEBUG
-        std::cerr << "Audio capture initialize edilemedi!" << std::endl;
+        cerr << "Audio capture initialize edilemedi!" << endl;
         #endif
         MessageBoxW(nullptr, 
             L"Ses sistemi başlatılamadı!\n"
@@ -66,7 +57,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     if (!audioCapture.Start()) {
         #ifdef _DEBUG
-        std::cerr << "Audio capture baslatilamadi!" << std::endl;
+        cerr << "Audio capture baslatilamadi!" << endl;
         #endif
         MessageBoxW(nullptr,
             L"Ses yakalama başlatılamadı!\n"
@@ -76,19 +67,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     #ifdef _DEBUG
-    std::cout << "Ses yakalama baslatildi!" << std::endl;
+    cout << "Ses yakalama baslatildi!" << endl;
     #endif
 
-    // Tray icon oluştur
     TrayIcon trayIcon;
     if (!trayIcon.Initialize(hInstance, L"Ses Dengeleyici - Aktif")) {
         #ifdef _DEBUG
-        std::cerr << "Tray icon olusturulamadi!" << std::endl;
+        cerr << "Tray icon olusturulamadi!" << endl;
         #endif
         return 1;
     }
-
-    // Toggle callback
+    
     trayIcon.SetOnToggle([&]() {
         g_isActive = !g_isActive;
         
@@ -96,38 +85,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             trayIcon.SetTooltip(L"Ses Dengeleyici - Aktif");
             trayIcon.ShowNotification(L"Ses Dengeleyici", L"Etkinleştirildi");
             #ifdef _DEBUG
-            std::cout << "Ses dengeleme AKTIF" << std::endl;
+            cout << "Ses dengeleme AKTIF" << endl;
             #endif
         } else {
             trayIcon.SetTooltip(L"Ses Dengeleyici - Devre Dışı");
             trayIcon.ShowNotification(L"Ses Dengeleyici", L"Devre dışı bırakıldı");
-            audioCapture.SetVolume(1.0f); // Normal seviyeye dön
+            audioCapture.SetVolume(1.0f); 
             #ifdef _DEBUG
-            std::cout << "Ses dengeleme DEVRE DISI" << std::endl;
+            cout << "Ses dengeleme DEVRE DISI" << endl;
             #endif
         }
     });
 
-    // Exit callback
     trayIcon.SetOnExit([&]() {
         g_shouldExit = true;
         #ifdef _DEBUG
-        std::cout << "Cikis istegi alindi" << std::endl;
+        cout << "Cikis istegi alindi" << endl;
         #endif
     });
 
-    // Başlangıç bildirimi
     trayIcon.ShowNotification(
         L"Ses Dengeleyici",
         L"Uygulama başlatıldı ve arka planda çalışıyor.\n"
         L"Çift tıklayarak açıp-kapatabilirsiniz.");
 
     #ifdef _DEBUG
-    std::cout << "Tray icon olusturuldu. Uygulama calisiyor..." << std::endl;
-    std::cout << "Kapatmak icin system tray'den cikin." << std::endl;
+    cout << "Tray icon olusturuldu. Uygulama calisiyor..." << endl;
+    cout << "Kapatmak icin system tray'den cikin." << endl;
     #endif
 
-    // Ana döngü - status güncelleme
     std::thread statusThread([&]() {
         while (!g_shouldExit) {
             if (g_isActive) {
@@ -136,8 +122,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 
                 std::wstringstream ss;
                 ss << L"Ses Dengeleyici - Aktif\n"
-                   << L"Seviye: " << std::fixed << std::setprecision(2) << (currentLevel * 100.0f) << L"%\n"
-                   << L"Volume: " << std::fixed << std::setprecision(2) << (targetVolume * 100.0f) << L"%";
+                   << L"Seviye: " << fixed << setprecision(2) << (currentLevel * 100.0f) << L"%\n"
+                   << L"Volume: " << fixed << setprecision(2) << (targetVolume * 100.0f) << L"%";
                 
                 trayIcon.SetTooltip(ss.str());
             }
@@ -158,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     audioCapture.Stop();
 
     #ifdef _DEBUG
-    std::cout << "Uygulama kapatiliyor..." << std::endl;
+    cout << "Uygulama kapatiliyor..." << endl;
     #endif
 
     #ifdef _DEBUG
@@ -167,3 +153,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     return 0;
 }
+
