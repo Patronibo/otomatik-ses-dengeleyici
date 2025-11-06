@@ -4,18 +4,19 @@
 #include <shellapi.h>
 #include <string>
 #include <functional>
+using namespace std;
 
 class TrayIcon {
 public:
     TrayIcon();
     ~TrayIcon();
 
-    bool Initialize(HINSTANCE hInstance, const std::wstring& tooltip);
-    void SetTooltip(const std::wstring& tooltip);
-    void ShowNotification(const std::wstring& title, const std::wstring& message);
+    bool Initialize(HINSTANCE hInstance, const wstring& tooltip);
+    void SetTooltip(const wstring& tooltip);
+    void ShowNotification(const wstring& title, const wstring& message);
     
-    using OnExitCallback = std::function<void()>;
-    using OnToggleCallback = std::function<void()>;
+    using OnExitCallback = function<void()>;
+    using OnToggleCallback = function<void()>;
     
     void SetOnExit(OnExitCallback callback) { m_onExit = callback; }
     void SetOnToggle(OnToggleCallback callback) { m_onToggle = callback; }
@@ -41,5 +42,6 @@ private:
     static constexpr UINT IDM_TOGGLE = 1002;
     static constexpr UINT IDM_ABOUT = 1003;
 };
+
 
 
