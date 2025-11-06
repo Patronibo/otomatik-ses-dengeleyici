@@ -14,7 +14,6 @@ public:
     void SetTooltip(const std::wstring& tooltip);
     void ShowNotification(const std::wstring& title, const std::wstring& message);
     
-    // Callback'ler
     using OnExitCallback = std::function<void()>;
     using OnToggleCallback = std::function<void()>;
     
@@ -42,4 +41,5 @@ private:
     static constexpr UINT IDM_TOGGLE = 1002;
     static constexpr UINT IDM_ABOUT = 1003;
 };
+
 
