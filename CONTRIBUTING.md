@@ -23,42 +23,33 @@ Ses Dengeleyici projesine katkıda bulunmak istediğiniz için teşekkür ederiz
 ### Naming Conventions
 
 ```cpp
-// Classes: PascalCase
 class AudioCapture { };
 
-// Functions: PascalCase
 void ProcessAudio();
 
-// Member variables: m_ prefix + camelCase
 float m_targetVolume;
 
-// Local variables: camelCase
 float currentLevel;
 
-// Constants: k prefix + PascalCase
 const float kDefaultThreshold = -20.0f;
 ```
 
 ### Dosya Yapısı
 
 ```cpp
-// Header guard
 #pragma once
 
-// System includes
 #include <windows.h>
 #include <vector>
 
-// Project includes
 #include "AudioCapture.h"
 
-// Class definition
 class MyClass {
 public:
-    // Public interface
+    
     
 private:
-    // Private implementation
+   
 };
 ```
 
@@ -143,4 +134,5 @@ Yeni özellik önerisi için:
 Issue açarak sorabilirsiniz!
 
 Teşekkürler! ❤️
+
 
