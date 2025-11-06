@@ -20,12 +20,10 @@ public:
     void Stop();
     bool IsRunning() const { return m_isRunning; }
 
-    // Ses callback fonksiyonu
     using AudioCallback = std::function<void(float* audioData, size_t frameCount, int channels)>;
     void SetCallback(AudioCallback callback) { m_callback = callback; }
 
-    // Ses seviyesini ayarla
-    void SetVolume(float volume); // 0.0 - 1.0 arasi
+    void SetVolume(float volume);
     float GetVolume() const;
 
 private:
@@ -46,3 +44,4 @@ private:
 
     AudioCallback m_callback;
 };
+
