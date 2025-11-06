@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+using namespace std;
 
 class AudioCompressor {
 public:
@@ -31,9 +32,10 @@ private:
     float m_currentLevel;   
     float m_targetVolume;   
     float m_envelope;       
-    std::vector<float> m_levelHistory;
+    vector<float> m_levelHistory;
     size_t m_historySize;
     size_t m_historyIndex;
 };
+
 
 
