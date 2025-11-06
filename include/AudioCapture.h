@@ -9,6 +9,7 @@
 #include <atomic>
 #include <functional>
 #include <vector>
+using namespace std;
 
 class AudioCapture {
 public:
@@ -20,7 +21,7 @@ public:
     void Stop();
     bool IsRunning() const { return m_isRunning; }
 
-    using AudioCallback = std::function<void(float* audioData, size_t frameCount, int channels)>;
+    using AudioCallback = function<void(float* audioData, size_t frameCount, int channels)>;
     void SetCallback(AudioCallback callback) { m_callback = callback; }
 
     void SetVolume(float volume);
@@ -38,10 +39,11 @@ private:
     ISimpleAudioVolume* m_pVolumeControl;
 
     WAVEFORMATEX* m_pwfx;
-    std::thread m_captureThread;
-    std::atomic<bool> m_isRunning;
-    std::atomic<bool> m_shouldStop;
+    thread m_captureThread;
+    atomic<bool> m_isRunning;
+    atomic<bool> m_shouldStop;
 
     AudioCallback m_callback;
 };
+
 
