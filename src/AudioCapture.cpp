@@ -9,8 +9,8 @@
 #undef min
 #undef max
 
-// COM için gerekli header'lar
 #include <functiondiscoverykeys_devpkey.h>
+using namespace std;
 
 #pragma comment(lib, "ole32.lib")
 
@@ -36,12 +36,11 @@ bool AudioCapture::Initialize() {
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) {
         #ifdef _DEBUG
-        std::cerr << "COM initialize hatasi" << std::endl;
+        cerr << "COM initialize hatasi" << endl;
         #endif
         return false;
     }
 
-    // Device enumerator oluştur
     hr = CoCreateInstance(
         __uuidof(MMDeviceEnumerator), nullptr,
         CLSCTX_ALL, __uuidof(IMMDeviceEnumerator),
@@ -51,15 +50,13 @@ bool AudioCapture::Initialize() {
         return false;
     }
 
-    // Varsayılan ses cihazını al (loopback için render device)
     hr = m_pEnumerator->GetDefaultAudioEndpoint(
         eRender, eConsole, &m_pDevice);
     
     if (FAILED(hr)) {
         return false;
     }
-
-    // Audio client oluştur
+    
     hr = m_pDevice->Activate(
         __uuidof(IAudioClient), CLSCTX_ALL,
         nullptr, reinterpret_cast<void**>(&m_pAudioClient));
@@ -67,18 +64,16 @@ bool AudioCapture::Initialize() {
     if (FAILED(hr)) {
         return false;
     }
-
-    // Ses formatını al
+    
     hr = m_pAudioClient->GetMixFormat(&m_pwfx);
     if (FAILED(hr)) {
         return false;
     }
 
-    // Audio client'i loopback mode'da başlat
     hr = m_pAudioClient->Initialize(
         AUDCLNT_SHAREMODE_SHARED,
         AUDCLNT_STREAMFLAGS_LOOPBACK,
-        10000000, // 1 saniye buffer
+        10000000, 
         0,
         m_pwfx,
         nullptr);
@@ -87,7 +82,6 @@ bool AudioCapture::Initialize() {
         return false;
     }
 
-    // Capture client oluştur
     hr = m_pAudioClient->GetService(
         __uuidof(IAudioCaptureClient),
         reinterpret_cast<void**>(&m_pCaptureClient));
@@ -96,11 +90,11 @@ bool AudioCapture::Initialize() {
         return false;
     }
 
-    // Session manager ve volume control al
+    
     hr = m_pDevice->Activate(
         __uuidof(IAudioSessionManager), CLSCTX_ALL,
         nullptr, reinterpret_cast<void**>(&m_pSessionManager));
-    
+                                        
     if (SUCCEEDED(hr)) {
         m_pSessionManager->GetSimpleAudioVolume(
             nullptr, FALSE, &m_pVolumeControl);
@@ -169,16 +163,12 @@ void AudioCapture::CaptureThread() {
                 break;
             }
 
-            // Sessizlik kontrolü
             if (!(flags & AUDCLNT_BUFFERFLAGS_SILENT)) {
-                // Ses verisini float'a dönüştür ve callback'i çağır
                 if (m_callback && numFramesAvailable > 0) {
                     int channels = static_cast<int>(m_pwfx->nChannels);
-                    
-                    // Float array oluştur
-                    std::vector<float> floatData(static_cast<size_t>(numFramesAvailable) * channels);
-                    
-                    // 16-bit PCM'den float'a dönüştür
+        
+                    vector<float> floatData(static_cast<size_t>(numFramesAvailable) * channels);
+                
                     if (m_pwfx->wFormatTag == WAVE_FORMAT_PCM || 
                         (m_pwfx->wFormatTag == WAVE_FORMAT_EXTENSIBLE && 
                          m_pwfx->wBitsPerSample == 16)) {
@@ -188,7 +178,6 @@ void AudioCapture::CaptureThread() {
                             floatData[i] = static_cast<float>(samples[i]) / 32768.0f;
                         }
                     }
-                    // Float format
                     else if (m_pwfx->wBitsPerSample == 32) {
                         float* samples = reinterpret_cast<float*>(pData);
                         for (UINT32 i = 0; i < numFramesAvailable * static_cast<UINT32>(channels); i++) {
@@ -217,7 +206,7 @@ void AudioCapture::CaptureThread() {
 
 void AudioCapture::SetVolume(float volume) {
     if (m_pVolumeControl) {
-        volume = std::max(0.0f, std::min(1.0f, volume));
+        volume = max(0.0f, min(1.0f, volume));
         m_pVolumeControl->SetMasterVolume(volume, nullptr);
     }
 }
@@ -269,3 +258,4 @@ void AudioCapture::Cleanup() {
 
     CoUninitialize();
 }
+
