@@ -1,5 +1,6 @@
 #include "TrayIcon.h"
 #include "resource.h"
+using namespace std;
 
 TrayIcon::TrayIcon()
     : m_hwnd(nullptr)
@@ -19,7 +20,6 @@ TrayIcon::~TrayIcon() {
 bool TrayIcon::Initialize(HINSTANCE hInstance, const std::wstring& tooltip) {
     m_hInstance = hInstance;
 
-    // Gizli pencere sınıfı oluştur
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.lpfnWndProc = WindowProc;
@@ -33,7 +33,6 @@ bool TrayIcon::Initialize(HINSTANCE hInstance, const std::wstring& tooltip) {
         }
     }
 
-    // Gizli pencere oluştur
     m_hwnd = CreateWindowEx(
         0,
         L"SesDengeleyiciTrayClass",
@@ -46,17 +45,13 @@ bool TrayIcon::Initialize(HINSTANCE hInstance, const std::wstring& tooltip) {
         return false;
     }
 
-    // this pointer'ı window data'ya kaydet
     SetWindowLongPtr(m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
-    // Tray icon'u ayarla
     m_nid.cbSize = sizeof(NOTIFYICONDATA);
     m_nid.hWnd = m_hwnd;
     m_nid.uID = 1;
     m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
     m_nid.uCallbackMessage = WM_TRAYICON;
-    
-    // İkon yükle (varsayılan application icon kullan)
     m_nid.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
     
     wcsncpy_s(m_nid.szTip, tooltip.c_str(), _TRUNCATE);
@@ -171,7 +166,6 @@ void TrayIcon::CreateContextMenu(POINT pt) {
     AppendMenuW(hMenu, MF_SEPARATOR, 0, nullptr);
     AppendMenuW(hMenu, MF_STRING, IDM_EXIT, L"Çıkış");
 
-    // Menüyü göstermek için pencereyi öne getir
     SetForegroundWindow(m_hwnd);
 
     TrackPopupMenu(hMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN,
@@ -179,3 +173,4 @@ void TrayIcon::CreateContextMenu(POINT pt) {
 
     DestroyMenu(hMenu);
 }
+
